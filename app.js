@@ -4,8 +4,10 @@
  */
 
 var express = require('express');
+var mongoose = require('mongoose');
 var routes = require('./routes');
-var user = require('./routes/user');
+var applicant = require('./routes/applicant');
+var question = require('./routes/question');
 var http = require('http');
 var path = require('path');
 
@@ -28,9 +30,15 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
-app.get('/users', user.list);
+// connect to mongodb
+mongoose.connect('mongodb://localhost:27017/quiz_dev');
 
+// routers
+app.get('/', routes.index);
+app.post('/applicant', applicant.create);
+app.get('/questions', question.list);
+
+// Init
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

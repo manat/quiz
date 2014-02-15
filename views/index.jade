@@ -5,17 +5,17 @@ block content
   .large-6.columns
     h1= title
     p Please enter your information below.
-    form
+    form(action='/applicant', method='post')
       .row
         .large-12.columns
           label
             | Full Name 
-            input(type='text', placeholder='first name and last name')
+            input(type='text', name='fullname', placeholder='first name and last name')
       .row
         .large-9.columns
           label
             | Position
-            select
+            select(name='position')
               option(value='p') Programmer
               option(value='ap') Analyst Programmer
               option(value='sap') Senior Analyst Programmer
@@ -26,7 +26,7 @@ block content
         .large-12.columns
           label
             | Notes
-            textarea(placeholder='leave your additional information here')
+            textarea(name='notes', placeholder='leave your additional information here')
       .row
         .large-12.columns
           button.small.button.green(type='submit') Submit
