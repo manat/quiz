@@ -1,3 +1,4 @@
-body {
-  padding: 50px;
+section[role="main"] {
+    display: block;
+    padding: 40px;
 }
