@@ -4,6 +4,30 @@ block content
   .large-3.columns ...
   .large-6.columns
     h1= title
-    h3.subheader Welcome to #{title}
     p Please enter your information below.
+    form
+      .row
+        .large-12.columns
+          label
+            | Full Name 
+            input(type='text', placeholder='first name and last name')
+      .row
+        .large-9.columns
+          label
+            | Position
+            select
+              option(value='p') Programmer
+              option(value='ap') Analyst Programmer
+              option(value='sap') Senior Analyst Programmer
+              option(value='pl') Project Leader
+              option(value='tl') Technical Leader
+              option(value='na') Others (Specify in Notes below)
+      .row
+        .large-12.columns
+          label
+            | Notes
+            textarea(placeholder='leave your additional information here')
+      .row
+        .large-12.columns
+          button.small.button.green(type='submit') Submit
   .large-3.columns ...
