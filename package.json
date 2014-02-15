@@ -1,0 +1,15 @@
+{
+  "name": "Quiz",
+  "version": "0.0.1",
+  "license": "MIT",
+  "author": "Manat Lertpeetipat (Sid)", 
+  "twitter": "manat", 
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "express": "3.4.8",
+    "jade": "*"
+  }
+}
