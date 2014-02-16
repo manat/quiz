@@ -2,7 +2,6 @@
 
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-// var Question = require('./question');
 
 module.exports = mongoose.model('Exam', {
     name: String, 

@@ -6,11 +6,10 @@
 var express = require('express');
 var mongoose = require('mongoose');
 var routes = require('./routes');
-var applicant = require('./routes/applicant');
-var question = require('./routes/question');
 var http = require('http');
 var path = require('path');
-
+var applicant = require('./routes/applicant');
+var question = require('./routes/question');
 var app = express();
 
 // all environments
@@ -35,10 +34,12 @@ mongoose.connect('mongodb://localhost:27017/quiz_dev');
 
 // routers
 app.get('/', routes.index);
-app.post('/applicant', applicant.create);
+app.get('/applicants/:id', applicant.show);
+app.get('/applicants/new', applicant.new);
+app.post('/applicants', applicant.create);
 app.get('/questions', question.list);
 
-// Init
+// init
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });

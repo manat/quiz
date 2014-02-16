@@ -1,0 +1,25 @@
+form(action='/applicants', method='post')
+  .row
+    .large-9.columns
+      label
+        | Full Name 
+        input(type='text', name='fullname', placeholder='first name and last name')
+  .row
+    .large-9.columns
+      label
+        | Position
+        select(name='position')
+          option(value='p') Programmer
+          option(value='ap') Analyst Programmer
+          option(value='sap') Senior Analyst Programmer
+          option(value='pl') Project Leader
+          option(value='tl') Technical Leader
+          option(value='na') Others (Specify in Notes below)
+  .row
+    .large-9.columns
+      label
+        | Notes
+        textarea(name='notes', placeholder='leave your additional information here')
+  .row
+    .large-9.columns
+      button.small.button.green(type='submit') Submit

@@ -7,9 +7,19 @@ var Question = require('../models/question');
  * GET applicants listing.
  */
 
-exports.list = function(req, res){
+exports.list = function(req, res) {
   res.send("respond with a resource");
 };
+
+exports.new = function(req, res) {
+  res.render('applicants/new');
+};
+
+exports.show = function(req, res) {
+  Applicant.findById(req.params.id, function(err, applicant) {
+    res.render('applicants/show', { applicant: applicant} );
+  });
+}
 
 /*
  * POST create an applicant.
@@ -22,29 +32,13 @@ exports.create = function(req, res) {
     notes: req.body.notes
   });
 
-  var question = new Question({
-    text: "Sample Question #1", 
-    point: 5
-  });
-
-  var exam = new Exam({
-    name: "Sample Exam #1", 
-    questions: [question]
-  });
-
-  // See http://mongoosejs.com/docs/populate.html
-  exam.save();
-
-  question.exam = exam;
-  question.save();
-
-  applicant.save(function (error) {
-    console.log('fsdfd')
+  applicant.save(function(error) {
     if (error) {
       console.log(error);
       console.log("Failed to save this applicant. " + applicant);
     }
+    else {
+      res.redirect('/applicants/' + applicant._id, applicant);
+    }
   });
-
-  res.redirect('/questions')
 }
