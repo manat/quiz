@@ -17,7 +17,10 @@ exports.new = function(req, res) {
 
 exports.show = function(req, res) {
   Applicant.findById(req.params.id, function(err, applicant) {
-    res.render('applicants/show', { applicant: applicant} );
+    Exam.findOne({ applicant: applicant._id })
+      .exec(function (err, exam) {
+        res.render('applicants/show', { applicant: applicant, exam: exam } );
+      });
   });
 }
 
@@ -32,13 +35,37 @@ exports.create = function(req, res) {
     notes: req.body.notes
   });
 
-  applicant.save(function(error) {
-    if (error) {
-      console.log(error);
+  applicant.save(function(err) {
+    if (err) {
+      console.log(err);
       console.log("Failed to save this applicant. " + applicant);
     }
     else {
-      res.redirect('/applicants/' + applicant._id, applicant);
+      // Prepare exam for this applicant 
+      Question.find({}, function(err, questions) {
+        var items = [];
+        var item = {};
+        var exam;
+
+        questions.forEach(function(question) {
+          item.question = [question];
+          items.push(item);
+        });
+
+        exam = new Exam({
+          applicant: applicant, 
+          items: items
+        });
+
+        exam.save(function(err) {
+           if (err) {
+            console.log(err);
+            console.log("Failed to create an Exam for this applicant. " + exam);
+          }
+        });
+      });
+
+      res.redirect('/applicants/' + applicant._id);
     }
   });
 }

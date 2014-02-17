@@ -6,7 +6,9 @@ var Schema = mongoose.Schema;
 module.exports = mongoose.model('Exam', {
     name: String, 
     description: String, 
-    questions : [{ type: Schema.Types.ObjectId, ref: 'Question' }], 
+    items: [{ question: ['Question'], answer: String }], 
+    applicant: { type: Schema.Types.ObjectId, ref: 'Applicant' }, 
+    score: Number, 
     created_at: Date, 
     updated_at: { type: Date, default: Date.now }
 });
