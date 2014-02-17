@@ -36,6 +36,7 @@ mongoose.connect('mongodb://localhost:27017/quiz_dev');
 app.get('/', routes.index);
 app.get('/applicants/new', applicant.new);
 app.get('/applicants/:id', applicant.show);
+app.get('/applicants/:applicant_id/questions/:question_id', applicant.question.show);
 app.post('/applicants', applicant.create);
 app.get('/questions', question.list);
 

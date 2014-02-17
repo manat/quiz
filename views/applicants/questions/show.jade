@@ -1,0 +1,11 @@
+extends ../../layout
+
+block content
+  .large-3.columns 
+  .large-9.large-centered.columns
+    h1 Exam
+    h3= question.text
+    p= 'Point: ' + question.point
+    
+    include form
+

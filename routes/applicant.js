@@ -69,3 +69,19 @@ exports.create = function(req, res) {
     }
   });
 }
+
+/*
+ * Nested Resource goes here. 
+ */
+
+exports.question = {};
+exports.question.show = function(req, res) {
+  Question.findById(req.params.question_id, function(err, question) {
+    if (err) {
+      res.send(err);
+    } 
+    else {
+      res.render('applicants/questions/show', { question: question } );          
+    }
+  });
+}
