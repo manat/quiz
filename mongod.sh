@@ -1,2 +1,2 @@
 #!/bin/bash   
-mongod --dbpath ~/Workspaces/node/quiz/data
+mongod --dbpath ./data

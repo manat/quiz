@@ -76,12 +76,16 @@ exports.create = function(req, res) {
 
 exports.question = {};
 exports.question.show = function(req, res) {
+  var md = require("marked");
+
   Question.findById(req.params.question_id, function(err, question) {
     if (err) {
       res.send(err);
     } 
     else {
-      res.render('applicants/questions/show', { question: question } );          
+      question.text = '```javascript\nvar s;\n```'
+
+      res.render('applicants/questions/show', { question: question, md: md } );          
     }
   });
 }

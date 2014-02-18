@@ -3,9 +3,8 @@ extends ../../layout
 block content
   .large-3.columns 
   .large-9.large-centered.columns
-    h1 Exam
-    h3= question.text
+    h2 Question
+    p!= md(question.text)
     p= 'Point: ' + question.point
-    
     include form
 
