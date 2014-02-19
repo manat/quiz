@@ -1,7 +1,7 @@
 section[role="main"] {
-    padding: 40px;
+    padding: 2em;
 }
 
 textarea.tall {
-    height: 150px;
+    height: 12em;
 }

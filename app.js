@@ -33,14 +33,26 @@ if ('development' == app.get('env')) {
 // connect to mongodb
 mongoose.connect('mongodb://localhost:27017/quiz_dev');
 
-// routers
+/**
+ * routers
+ * TODO : extract routers to routes.js if possible.
+ */
 app.get('/', routes.index);
+
+// applicant route
 app.get('/applicants/new', applicant.new);
 app.get('/applicants/:id', applicant.show);
-app.get('/applicants/:applicant_id/exams/:exam_id/questions/:question_id', applicant.question.show);
 app.post('/applicants', applicant.create);
-app.get('/questions', question.list);
+
+// exam route
 app.get('/exams/:id', exam.show);
+app.get('/exams/:exam_id/questions/:question_id', exam.question.show);
+app.post('/exams/:exam_id/questions/:question_id', exam.question.create);
+
+// quiestion route
+app.get('/questions', question.list);
+
+/* end of routers */
 
 // init
 http.createServer(app).listen(app.get('port'), function(){
