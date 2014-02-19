@@ -31,10 +31,12 @@ exports.question.show = function(req, res) {
     var md = require('marked');
     var question;
     var buttonText = 'Next';
+    var answer;
 
     for (var i = 0; i < exam.items.length; i++) {
       if (exam.items[i]._id == req.params.question_id) {
         question = exam.items[i].question[0];
+        answer = exam.items[i].answer;
         if ((i + 1) === exam.items.length) {
           buttonText = 'Submit';
         }
@@ -47,6 +49,7 @@ exports.question.show = function(req, res) {
     res.render('exams/questions/show', { 
       md: md, 
       question: question, 
+      answer: answer,
       buttonText: buttonText
     });  
   });
