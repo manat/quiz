@@ -5,3 +5,7 @@ section[role="main"] {
 textarea.tall {
     height: 12em;
 }
+
+span.required {
+    color: #f04124;
+}

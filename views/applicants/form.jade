@@ -3,12 +3,14 @@ form(action='/applicants', method='post')
     .large-9.columns
       label
         | Full Name 
-        input(type='text', name='fullname', placeholder='first name and last name')
+        span.required *
+        input(type='text', name='fullname', required, placeholder='first name and last name')
   .row
     .large-9.columns
       label
-        | Position
-        select(name='position')
+        | Position 
+        span.required *
+        select(name='position' required)
           option(value='p') Programmer
           option(value='ap') Analyst Programmer
           option(value='sap') Senior Analyst Programmer
@@ -19,7 +21,7 @@ form(action='/applicants', method='post')
     .large-9.columns
       label
         | Notes
-        textarea(name='notes', placeholder='leave your additional information here')
+        textarea.tall(name='notes', placeholder='leave your additional information here (optional)')
   .row
     .large-9.columns
       button.small.button.green(type='submit') Submit

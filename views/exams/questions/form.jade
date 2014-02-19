@@ -2,7 +2,8 @@ form(method='post')
   .row
     .large-12.columns
       label
-        | Answer: 
+        | Answer 
+        span.required *
         textarea.editor.tall(name='answer', placeholder='please enter your answer')= answer
   .row
     .large-12.columns
