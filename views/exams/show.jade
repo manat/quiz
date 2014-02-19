@@ -1,0 +1,10 @@
+extends ../layout
+
+block content
+  .large-3.columns 
+  .large-9.large-centered.columns
+    h1 Time To Show Your Strength
+    p Exam Instructions go here... 
+    p= 'There is a total of ' + questionAmount + ' questions, which should take about 90 mins to finish.'
+    a.button.small(href=nextLink) Start
+

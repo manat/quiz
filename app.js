@@ -10,6 +10,7 @@ var http = require('http');
 var path = require('path');
 var applicant = require('./routes/applicant');
 var question = require('./routes/question');
+var exam = require('./routes/exam');
 var app = express();
 
 // all environments
@@ -36,9 +37,10 @@ mongoose.connect('mongodb://localhost:27017/quiz_dev');
 app.get('/', routes.index);
 app.get('/applicants/new', applicant.new);
 app.get('/applicants/:id', applicant.show);
-app.get('/applicants/:applicant_id/questions/:question_id', applicant.question.show);
+app.get('/applicants/:applicant_id/exams/:exam_id/questions/:question_id', applicant.question.show);
 app.post('/applicants', applicant.create);
 app.get('/questions', question.list);
+app.get('/exams/:id', exam.show);
 
 // init
 http.createServer(app).listen(app.get('port'), function(){

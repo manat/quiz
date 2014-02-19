@@ -3,9 +3,23 @@ var Applicant = require('../models/applicant');
 var Exam = require('../models/exam');
 var Question = require('../models/question');
 
-/*
- * GET applicants listing.
- */
+var populateQuestions = function(exam, callback) {
+  Question.find({}, function(err, questions) {
+    if (err) {
+      console.log('[ERROR] Unable to find questions. \n' + err);
+      callback(err);
+    }
+
+    questions.forEach(function(question) {
+      var item = {};
+      item.question = [question];
+      console.log(question._id + ' : ' + exam);
+      exam.items.push(item);
+    });
+
+    callback();
+  });
+};
 
 exports.list = function(req, res) {
   res.send("respond with a resource");
@@ -18,15 +32,21 @@ exports.new = function(req, res) {
 exports.show = function(req, res) {
   Applicant.findById(req.params.id, function(err, applicant) {
     Exam.findOne({ applicant: applicant._id })
+      .sort('-created_at')
+      .select('_id')
       .exec(function (err, exam) {
-        res.render('applicants/show', { applicant: applicant, exam: exam } );
+        if (err || !exam) {
+          console.log('[ERROR]: ' + Date.now + '\n' + err);
+          return;
+        }
+
+        res.render('applicants/show', { 
+          applicant: applicant, 
+          nextLink: '/exams/' + exam.id
+        });
       });
   });
 }
-
-/*
- * POST create an applicant.
- */
 
 exports.create = function(req, res) {
   var applicant = new Applicant({ 
@@ -34,39 +54,33 @@ exports.create = function(req, res) {
     position: req.body.position,
     notes: req.body.notes
   });
+  var exam = new Exam({ applicant: applicant, items: [] });
 
-  applicant.save(function(err) {
+  populateQuestions(exam, function(err) {
     if (err) {
-      console.log(err);
-      console.log("Failed to save this applicant. " + applicant);
+      return;
     }
-    else {
-      // Prepare exam for this applicant 
-      Question.find({}, function(err, questions) {
-        var items = [];
-        var item = {};
-        var exam;
 
-        questions.forEach(function(question) {
-          item.question = [question];
-          items.push(item);
-        });
+    exam.save(function(err) {
+      if (err) {
+        console.log(err);
+        console.log("Failed to create an Exam for this applicant. " + exam);
+      } 
+      else {
+        // link exam to applicant.
+        applicant.exams.push(exam);
 
-        exam = new Exam({
-          applicant: applicant, 
-          items: items
-        });
-
-        exam.save(function(err) {
-           if (err) {
+        applicant.save(function(err) {
+          if (err) {
             console.log(err);
-            console.log("Failed to create an Exam for this applicant. " + exam);
+            console.log("Failed to save this applicant. " + applicant);
+          }
+          else {
+            res.redirect('/applicants/' + applicant._id);
           }
         });
-      });
-
-      res.redirect('/applicants/' + applicant._id);
-    }
+      }
+    });
   });
 }
 
