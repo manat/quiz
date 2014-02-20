@@ -5,12 +5,8 @@
 
 var express = require('express');
 var mongoose = require('mongoose');
-var routes = require('./routes');
 var http = require('http');
 var path = require('path');
-var applicant = require('./routes/applicant');
-var question = require('./routes/question');
-var exam = require('./routes/exam');
 var app = express();
 
 // all environments
@@ -33,26 +29,8 @@ if ('development' == app.get('env')) {
 // connect to mongodb
 mongoose.connect('mongodb://localhost:27017/quiz_dev');
 
-/**
- * routers
- * TODO : extract routers to routes.js if possible.
- */
-app.get('/', routes.index);
-
-// applicant route
-app.get('/applicants/new', applicant.new);
-app.get('/applicants/:id', applicant.show);
-app.post('/applicants', applicant.create);
-
-// exam route
-app.get('/exams/:id', exam.show);
-app.get('/exams/:exam_id/questions/:question_id', exam.question.show);
-app.post('/exams/:exam_id/questions/:question_id', exam.question.create);
-
-// quiestion route
-app.get('/questions', question.list);
-
-/* end of routers */
+// load routes
+require('./routes')(app); 
 
 // init
 http.createServer(app).listen(app.get('port'), function(){
