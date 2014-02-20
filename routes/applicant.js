@@ -54,8 +54,8 @@ exports.create = function(req, res) {
     position: req.body.position,
     notes: req.body.notes
   });
-  var exam = new Exam({ applicant: applicant, items: [] });
 
+  var exam = new Exam({ applicant: applicant, items: [] });
   populateQuestions(exam, function(err) {
     if (err) {
       return;
@@ -63,8 +63,8 @@ exports.create = function(req, res) {
 
     exam.save(function(err) {
       if (err) {
-        console.log(err);
-        console.log("Failed to create an Exam for this applicant. " + exam);
+        console.log("[ERROR] Failed to create an Exam for this applicant. " + exam);
+        console.log("\n" + err);
       } 
       else {
         // link exam to applicant.
@@ -72,10 +72,15 @@ exports.create = function(req, res) {
 
         applicant.save(function(err) {
           if (err) {
-            console.log(err);
-            console.log("Failed to save this applicant. " + applicant);
+            console.log("[ERROR] Failed to save this applicant. " + applicant);
+            console.log("\n" + err);
           }
           else {
+            res.cookie(applicant._id, 
+              { authenticated: true }, 
+              { signed: true, httpOnly: true, maxAge: (120 * 60 * 1000) }
+            );
+
             res.redirect('/applicants/' + applicant._id);
           }
         });

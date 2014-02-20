@@ -6,6 +6,14 @@ var renderErrorIfAny = function(err, res) {
     res.redirect('500'); // TODO
   }
 }
+var renderErrorIfNotAuthenticated = function(cookie, res) {
+  /* See http://expressjs.com/api.html#res */
+
+  if (!(cookie && cookie.authenticated)) {
+      console.log('[ERROR]: Unauthenticated : ' + new Date());
+      res.redirect('404'); // TODO
+  }
+}
 
 exports.show = function(req, res) {
   Exam.findById(req.params.id, function(err, exam) {
@@ -25,8 +33,10 @@ exports.show = function(req, res) {
 
 exports.question = {};
 exports.question.show = function(req, res) {
+
   Exam.findById(req.params.exam_id, function(err, exam) {
     renderErrorIfAny(err, res);
+    renderErrorIfNotAuthenticated(req.signedCookies[exam.applicant], res);
     
     var md = require('marked');
     var question;

@@ -18,6 +18,7 @@ app.use(express.logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
+app.use(express.cookieParser('Bns*IK4TL<Rfc?E[Lli%K*Xph'));
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 
