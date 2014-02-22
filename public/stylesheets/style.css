@@ -9,3 +9,13 @@ textarea.tall {
 span.required {
     color: #f04124;
 }
+
+a.button.previous {
+    margin-right: 0.5em;
+    background-color: #39506f;
+    border-color: #2C3E50;
+}
+
+a.button.previous:hover {
+    background-color: #2C3E50;
+}

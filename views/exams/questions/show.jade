@@ -1,11 +1,13 @@
 extends ../../layout
 
 block content
-  .large-3.columns 
-  .large-9.large-centered.columns
-    h2 Question
-    article.markdown
-      p!= md(question.text)
-      p= 'Point: ' + question.point
-    include form
-
+  .row
+    .large-3.columns 
+    .large-9.large-centered.columns
+      h2 Question
+      article.markdown
+        p!= md(question.text)
+        p= 'Point: ' + question.point
+      include form
+block footer      
+  script(src='/javascripts/exams/questions/form.js')

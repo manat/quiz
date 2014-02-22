@@ -27,6 +27,15 @@ exports.show = function(req, res) {
   });
 }
 
+exports.done = function(req, res) {
+  Exam.findById(req.params.id, function(err, exam) {
+    renderErrorIfAny(err, res);
+
+    res.clearCookie(exam.applicant);
+    res.render('exams/done');
+  });
+}
+
 /**
  * nested resource 
  */
@@ -40,27 +49,33 @@ exports.question.show = function(req, res) {
     
     var md = require('marked');
     var question;
-    var buttonText = 'Next';
     var answer;
+    var nextQuestionIds = [];
+    var previousQuestionIds = [];
 
-    for (var i = 0; i < exam.items.length; i++) {
+    for (var i = 0, no = 1; i < exam.items.length; i++, no++) {
       if (exam.items[i]._id == req.params.question_id) {
         question = exam.items[i].question[0];
         answer = exam.items[i].answer;
-        if ((i + 1) === exam.items.length) {
-          buttonText = 'Submit';
-        }
+
+        // TODO
+        question.text = '#' + no + '\n```javascript\nvar s;\n```';
+        // END TODO
+      }
+      else if (question) {
+        nextQuestionIds.push({ no: no, id: exam.items[i]._id });
+      } 
+      else {
+        previousQuestionIds.push({ no: no, id: exam.items[i]._id });
       }
     }
-
-    // TODO
-    question.text = '# Something\n```javascript\nvar s;\n```';
 
     res.render('exams/questions/show', { 
       md: md, 
       question: question, 
       answer: answer,
-      buttonText: buttonText
+      nextQuestionIds: nextQuestionIds,
+      previousQuestionIds: previousQuestionIds
     });  
   });
 }
@@ -68,26 +83,33 @@ exports.question.show = function(req, res) {
 exports.question.create = function(req, res) {
   Exam.findById(req.params.exam_id, function(err, exam) {
     renderErrorIfAny(err, res);
-    
-    var question;
     var answer = req.body.answer;
-    var nextItemId;
+    var questionId = req.body.submit_id;
+    var isNext = (req.body.submit_mode == 'next');
+    var isSubmit = (req.body.submit_mode == 'submit');
+
+    if (isSubmit) {
+      return res.redirect('/exams/' + exam._id + '/done');
+    }
 
     for (var i = 0; i < exam.items.length; i++) {
       if (exam.items[i]._id == req.params.question_id) {
-        question = exam.items[i].question[0];
-        if ((i + 1) < exam.items.length) {
-          nextItemId = exam.items[i + 1]._id;
+        if (questionId.length === 0) {
+          if (isNext && ((i + 1) < exam.items.length)) {
+            questionId = exam.items[i + 1]._id;
+          }
+          else if (!isNext && ((i - 1) >= 0)) {
+            questionId = exam.items[i - 1]._id;
+          }
         }
         
         exam.items[i].answer = req.body.answer;
         exam.save(function(err) {
           renderErrorIfAny(err, res);
-          
         });
       }
     }
 
-    res.redirect('/exams/' + exam._id + '/questions/' + nextItemId);
+    res.redirect('/exams/' + exam._id + '/questions/' + questionId);
   });
 }

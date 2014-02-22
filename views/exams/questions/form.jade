@@ -5,6 +5,26 @@ form(method='post')
         | Answer 
         span.required *
         textarea.editor.tall(name='answer', placeholder='please enter your answer')= answer
+        input(type='hidden', name='submit_mode', value='')
+        input(type='hidden', name='submit_id', value='')
   .row
     .large-12.columns
-      button.small.button.green(type='submit')= buttonText
+      if previousQuestionIds.length > 0
+        a.button.previous.tiny.split(href='#', id='previous_button', data-action='previous') Previous
+          span(data-dropdown='drop-previous')
+        ul#drop-previous.f-dropdown(data-dropdown-content='data-dropdown-previous-questions')
+          each question in previousQuestionIds 
+            li
+              a(href='#', id='previous_dropdown_button_' + question.no, data-action=question.id)
+                = 'Question #' + question.no
+
+      if nextQuestionIds.length > 0
+        a.button.next.tiny.split(href='#', id='next_button', data-action='next') Next
+          span(data-dropdown='drop-next')
+        ul#drop-next.f-dropdown(data-dropdown-content='data-dropdown-next-questions')
+          each question in nextQuestionIds
+            li
+              a(href='#', id='next_dropdown_button_' + question.no, data-action=question.id)
+                = 'Question #' + question.no
+      else
+        a.button.tiny(href='#', id='submit_button', data-action='submit') Submit

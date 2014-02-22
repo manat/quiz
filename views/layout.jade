@@ -7,6 +7,7 @@ html
     link(rel='stylesheet', href='/stylesheets/style.css')
     link(rel='stylesheet', href='/stylesheets/markdown/avenir-white.css')
     script(src='/javascripts/vendor/modernizr.js')
+    block header
   body.antialiased.hide-extras
     nav.top-bar(data-topbar='data-topbar')
       ul.title-area
@@ -33,7 +34,6 @@ html
       script(src='/javascripts/vendor/jquery.js')
       script(src='/javascripts/vendor/jquery.taboverride.min.js')
       script(src='/javascripts/foundation.min.js')
-      script(src='/javascripts/foundation/foundation.topbar.js')
-      script(src='/javascripts/foundation/foundation.topbar.js')
       script(src='/javascripts/app.js')
       script $(document).foundation();
+      block footer
