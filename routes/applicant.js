@@ -5,10 +5,7 @@ var Question = require('../models/question');
 
 var populateQuestions = function(exam, callback) {
   Question.find({}, function(err, questions) {
-    if (err) {
-      console.log('[ERROR] Unable to find questions. \n' + err);
-      callback(err);
-    }
+    if (err) { callback(err); }
 
     questions.forEach(function(question) {
       var item = {};
@@ -21,23 +18,22 @@ var populateQuestions = function(exam, callback) {
   });
 };
 
-exports.list = function(req, res) {
+exports.list = function(req, res, next) {
   res.send("respond with a resource");
 };
 
-exports.new = function(req, res) {
+exports.new = function(req, res, next) {
   res.render('applicants/new');
 };
 
-exports.show = function(req, res) {
+exports.show = function(req, res, next) {
   Applicant.findById(req.params.id, function(err, applicant) {
     Exam.findOne({ applicant: applicant._id })
       .sort('-created_at')
       .select('_id')
       .exec(function (err, exam) {
         if (err || !exam) {
-          console.log('[ERROR]: ' + Date.now + '\n' + err);
-          return;
+          return next(err);
         }
 
         res.render('applicants/show', { 
@@ -48,43 +44,35 @@ exports.show = function(req, res) {
   });
 }
 
-exports.create = function(req, res) {
+exports.create = function(req, res, next) {
   var applicant = new Applicant({ 
-    fullname: req.body.fullname, 
+    firstname: req.body.firstname, 
+    lastname: req.body.lastname, 
     position: req.body.position,
-    notes: req.body.notes
+    notes: req.body.notes, 
+    created_at: new Date
   });
 
   var exam = new Exam({ applicant: applicant, items: [] });
   populateQuestions(exam, function(err) {
-    if (err) {
-      return;
-    }
+    if (err) { return next(error); };
 
     exam.save(function(err) {
-      if (err) {
-        console.log("[ERROR] Failed to create an Exam for this applicant. " + exam);
-        console.log("\n" + err);
-      } 
-      else {
-        // link exam to applicant.
-        applicant.exams.push(exam);
+      if (err) { return next(err); } 
 
-        applicant.save(function(err) {
-          if (err) {
-            console.log("[ERROR] Failed to save this applicant. " + applicant);
-            console.log("\n" + err);
-          }
-          else {
-            res.cookie(applicant._id, 
-              { authenticated: true }, 
-              { signed: true, httpOnly: true, maxAge: (120 * 60 * 1000) }
-            );
+      // link exam to applicant.
+      applicant.exams.push(exam);
 
-            res.redirect('/applicants/' + applicant._id);
-          }
-        });
-      }
+      applicant.save(function(err) {
+        if (err) { return next(err); } 
+
+        res.cookie(applicant._id, 
+          { authenticated: true }, 
+          { signed: true, httpOnly: true, maxAge: (120 * 60 * 1000) }
+        );
+
+        res.redirect('/applicants/' + applicant._id);
+      });
     });
   });
 }

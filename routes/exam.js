@@ -1,23 +1,12 @@
 
 var Exam = require('../models/exam');
-var renderErrorIfAny = function(err, res) {
-  if (err) {
-    console.log('[ERROR]: ' + new Date() + '\n' + err);
-    res.redirect('500'); // TODO
-  }
-}
-var renderErrorIfNotAuthenticated = function(cookie, res) {
-  /* See http://expressjs.com/api.html#res */
+var isAuthenticated = function(cookie) {
+  return (cookie && cookie.authenticated);
+};
 
-  if (!(cookie && cookie.authenticated)) {
-      console.log('[ERROR]: Unauthenticated : ' + new Date());
-      res.redirect('404'); // TODO
-  }
-}
-
-exports.show = function(req, res) {
+exports.show = function(req, res, next) {
   Exam.findById(req.params.id, function(err, exam) {
-    renderErrorIfAny(err, res);
+    if (err) { return next(err); } 
 
     res.render('exams/show', { 
       exam: exam,
@@ -27,9 +16,9 @@ exports.show = function(req, res) {
   });
 }
 
-exports.done = function(req, res) {
+exports.done = function(req, res, next) {
   Exam.findById(req.params.id, function(err, exam) {
-    renderErrorIfAny(err, res);
+    if (err) { return next(err); } 
 
     res.clearCookie(exam.applicant);
     res.render('exams/done');
@@ -41,17 +30,22 @@ exports.done = function(req, res) {
  */
 
 exports.question = {};
-exports.question.show = function(req, res) {
+exports.question.show = function(req, res, next) {
 
   Exam.findById(req.params.exam_id, function(err, exam) {
-    renderErrorIfAny(err, res);
-    renderErrorIfNotAuthenticated(req.signedCookies[exam.applicant], res);
-    
     var md = require('marked');
     var question;
     var answer;
     var nextQuestionIds = [];
     var previousQuestionIds = [];
+
+    if (err) { return next(error) };
+
+    if (!isAuthenticated(req.signedCookies[exam.applicant])) { 
+      var error = new Error('Unauthenticated User');
+      error.status = '401';
+      return next(error); 
+    };
 
     for (var i = 0, no = 1; i < exam.items.length; i++, no++) {
       if (exam.items[i]._id == req.params.question_id) {
@@ -80,13 +74,20 @@ exports.question.show = function(req, res) {
   });
 }
 
-exports.question.create = function(req, res) {
+exports.question.create = function(req, res, next) {
   Exam.findById(req.params.exam_id, function(err, exam) {
-    renderErrorIfAny(err, res);
     var answer = req.body.answer;
     var questionId = req.body.submit_id;
     var isNext = (req.body.submit_mode == 'next');
     var isSubmit = (req.body.submit_mode == 'submit');
+
+    if (err) { return next(error) };
+
+    if (!isAuthenticated(req.signedCookies[exam.applicant])) { 
+      var error = new Error('Unauthenticated User');
+      error.status = '401';
+      return next(error); 
+    };
 
     if (isSubmit) {
       return res.redirect('/exams/' + exam._id + '/done');
@@ -105,7 +106,7 @@ exports.question.create = function(req, res) {
         
         exam.items[i].answer = req.body.answer;
         exam.save(function(err) {
-          renderErrorIfAny(err, res);
+          if (err) { return next(error) };
         });
       }
     }

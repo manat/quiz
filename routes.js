@@ -5,8 +5,8 @@ module.exports = function(app) {
   var question = require('./routes/question');
   var exam = require('./routes/exam');
 
-  // root
-  app.get('/', index.show);
+  // root : make new applicant as a default
+  app.get('/', applicant.new);
 
   // applicant route
   app.get('/applicants/new', applicant.new);

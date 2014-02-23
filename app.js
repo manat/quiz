@@ -7,6 +7,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var http = require('http');
 var path = require('path');
+var error = require('./routes/error');
 var app = express();
 
 // all environments
@@ -20,6 +21,8 @@ app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('Bns*IK4TL<Rfc?E[Lli%K*Xph'));
 app.use(app.router);
+app.use(error.logError);
+app.use(error.errorHandler);
 app.use(express.static(path.join(__dirname, 'public')));
 
 // development only
