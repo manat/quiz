@@ -1,14 +1,20 @@
 form(action='/applicants', method='post')
   .row
-    .large-9.columns
+    //- .large-9.columns
+    .large-4.columns
       label
-        | Full Name 
+        | First Name 
         span.required *
-        input(type='text', name='fullname', required, placeholder='first name and last name')
-  .row
-    .large-9.columns
+        input(type='text', name='firstname', required, placeholder='first name (required)')
+    .large-4.columns.end
       label
-        | Position 
+        | Last Name 
+        span.required *
+        input(type='text', name='lastname', required, placeholder='last name (required)')
+  .row
+    .large-8.columns
+      label
+        | Applies For Position 
         span.required *
         select(name='position' required)
           option(value='p') Programmer
@@ -18,10 +24,10 @@ form(action='/applicants', method='post')
           option(value='tl') Technical Leader
           option(value='na') Others (Specify in Notes below)
   .row
-    .large-9.columns
+    .large-8.columns
       label
         | Notes
         textarea.tall(name='notes', placeholder='leave your additional information here (optional)')
   .row
-    .large-9.columns
-      button.small.button.green(type='submit') Submit
+    .large-8.columns
+      button.tiny.button.green(type='submit') Submit

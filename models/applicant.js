@@ -4,8 +4,9 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 module.exports = mongoose.model('Applicant', {
-    fullname: String, 
-    position: String, 
+    firstname: { type: String, required: true, trim: true }, 
+    lastname: { type: String, required: true, trim: true }, 
+    position: { type: String, required: true, trim: true }, 
     notes: String, 
     exams: [{ type: Schema.Types.ObjectId, ref: 'Exam' }], 
     created_at: Date, 
