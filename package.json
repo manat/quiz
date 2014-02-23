@@ -12,6 +12,9 @@
     "express": "3.4.8",
     "jade": "*",
     "marked": "*",
-    "mongoose": "*"
+    "mongoose": "*",
+    "passport": "*",
+    "passport-local": "*",
+    "bcrypt-nodejs": "*"
   }
 }

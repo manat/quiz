@@ -8,6 +8,8 @@ var mongoose = require('mongoose');
 var http = require('http');
 var path = require('path');
 var error = require('./routes/error');
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
 var app = express();
 
 // all environments
@@ -20,6 +22,9 @@ app.use(express.json());
 app.use(express.urlencoded());
 app.use(express.methodOverride());
 app.use(express.cookieParser('Bns*IK4TL<Rfc?E[Lli%K*Xph'));
+app.use(express.session({ secret: 'hpX*K%ilL[E?cfR<LT4KI*snB' }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(app.router);
 app.use(error.logError);
 app.use(error.errorHandler);
@@ -34,7 +39,7 @@ if ('development' == app.get('env')) {
 mongoose.connect('mongodb://localhost:27017/quiz_dev');
 
 // load routes
-require('./routes')(app); 
+require('./routes')(app, passport); 
 
 // init
 http.createServer(app).listen(app.get('port'), function(){

@@ -1,9 +1,10 @@
 
-module.exports = function(app) {
+module.exports = function(app, passport) {
   var index = require('./routes/index');
   var applicant = require('./routes/applicant');
   var question = require('./routes/question');
   var exam = require('./routes/exam');
+  var admin = require('./routes/admin');
 
   // root : make new applicant as a default
   app.get('/', applicant.new);
@@ -21,4 +22,16 @@ module.exports = function(app) {
 
   // quiestion route
   app.get('/questions', question.list);
+
+  // admin
+  app.get('/admin/register', admin.users.new);
+  app.post('/admin/register', admin.users.create);
+  app.get('/admin/login', admin.users.login);
+  app.post('/admin/login', passport.authenticate('local', { successRedirect: '/', 
+                                                           failureRedirect: '/admin/login' }));
+  app.get('/admin/users/:id', admin.users.show);
+  
+  // every route below '/admin/*'' is now protected
+  app.all('/admin/*', admin.isAuthenticated);
+  app.get('/admin/questions', admin.questions.show);
 }

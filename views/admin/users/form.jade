@@ -1,0 +1,36 @@
+form(action='/admin/register', method='post')
+  .row
+    .medium-7.columns
+      label
+        | Username
+        span.required *
+      .row.collapse
+        .medium-2.columns      
+            span.prefix dt
+        .medium-10.columns
+            input(type='text', name='username', required, placeholder='dt number is encouraged (required)')
+  .row
+    .medium-7.columns
+      label
+        | Email
+        span.required *
+        input(type='email', name='email', required, placeholder='email (required)')
+  br
+  br
+  .row
+    .medium-7.columns
+      label
+        | Password
+        span.required *
+        input(type='password', name='password', required, placeholder='password (required)')
+  .row
+    .medium-7.columns
+      label
+        | Confirm Password
+        span.required *
+        input(type='password', name='confirm_password', required, placeholder='confirm password (required)')  
+  br
+  br
+  .row
+    .medium-7.columns
+      button.tiny.button.green(type='submit') Submit
