@@ -1,0 +1,14 @@
+extends ../../layout
+
+block content
+  .row
+    .large-3.columns 
+    .large-9.large-centered.columns
+      h1 Question
+      article.markdown
+        p!= md(question.text)
+      hr
+      p= 'Point: ' + question.point
+      p= 'Category: ' + question.category
+      p= 'Tags: ' + question.tags.join(', ')
+      p= 'Created By: ' + question.creator

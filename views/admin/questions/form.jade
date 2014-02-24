@@ -1,0 +1,33 @@
+form(action='/admin/questions/create', method='post')
+  .row
+    .small-6.columns
+      label Category
+        span.required *
+      select(name='category' required)
+        option(value='algorithm') Algorithm
+        option(value='fundamental') Fundamental Programming
+        option(value='oop') OOP
+        option(value='web') Web Technology
+        option(value='bonus') Bonus
+    .small-6.columns
+      label Tags
+      input(type='text', name='tags', placeholder='tags are separated by comma')
+  .row
+    .small-6.columns
+      label Point
+        span.required *
+      input(type='number', name='point', required, min='1', max='10', step='1', 
+        placeholder='scale from 1 - 10')
+  .row
+    .small-12.columns
+      label Question
+        span.required *
+      textarea.tall(name='text', required, placeholder='question can be entered with markdown syntax')
+  .row
+    .small-12.columns
+      label Solution
+      textarea.tall(name='solution', placeholder='solution or note to the question')
+  br
+  .row
+    .medium-7.columns
+      button.tiny.button.green(type='submit') Submit

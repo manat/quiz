@@ -7,9 +7,9 @@ block content
     hr
     h3 Questions
     ul
-      li
-        if canListQuestions
+      if canListQuestions
+        li
           a(href='admin/questions') List questions
-      li
-        if canAddQuestions
+      if canAddQuestions
+        li
           a(href='admin/questions/new') Add questions

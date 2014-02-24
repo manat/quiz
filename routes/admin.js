@@ -1,9 +1,10 @@
 
 var User = require('../models/user');
-var LocalStrategy = require('passport-local').Strategy;
+var Question = require('../models/question');
 
 exports.isAuthenticated = function(req, res, next) {
   if (req.user) {
+    req.session.returnTo = req.path; 
     next();
   }
   else {
@@ -12,17 +13,40 @@ exports.isAuthenticated = function(req, res, next) {
 };
 
 exports.hasRole = function(role, req, res, next) {
-  if (req.user.hasRole(role)) {
-    next();
-  }
-}
+  if (req.user.hasRole(role)) { return next(); }
+};
+
+exports.hasRoleAdmin = function(req, res, next) {
+  if (req.user.hasRole('admin')) { return next(); }
+};
+
+exports.hasRoleContributor = function(req, res, next) {
+  if (req.user.hasRole('contributor')) { return next(); }
+};
+
+exports.hasRoleAdminOrIsCreator = function(req, res, next) {
+  console.log('hasRoleAdminOrIsCreator')
+  if (req.user.hasRole('admin')) { return next(); }
+
+  Question.findById(req.params.id, function(err, question) {
+    if (err) { return nex(err); }
+    if (question) {
+      if ((question.creator.toString() == req.user._id) ||
+          (question.updater.toString() == req.user._id)) {
+          return next();
+      }
+    }
+  });
+};
 
 exports.index = function(req, res, next) {
   res.render('admin/index', {
     canListQuestions: req.user.hasRole('admin'), 
     canAddQuestions: req.user.hasRole('contributor')
   });
-}
+};
+
+/* Users */
 
 exports.users = {}
 exports.users.new = function(req, res, next) {
@@ -54,18 +78,49 @@ exports.users.show = function(req, res, next) {
 
     res.send('Thank you, ' + user.username);
   });
-}
+};
 
 exports.users.login = function(req, res, next) {
   res.render('admin/users/sessions/new');
 };
 
-exports.questions = {}
+/* Questions */
 
+exports.questions = {}
 exports.questions.index = function(req, res, next) {
   res.render('admin/questions/index');
 };
 
 exports.questions.show = function(req, res, next) {
-  res.send('admin questions show');
+  Question.findById(req.params.id, function(err, question) {
+    var md = require('marked');
+
+    if (err) { return nex(err); }
+
+    res.render('admin/questions/show', { question: question, md: md });
+  });
 };
+
+exports.questions.new = function(req, res, next) {
+  res.render('admin/questions/new');
+};
+
+exports.questions.create = function(req, res, next) {
+  var question = new Question({ 
+    text: req.body.text, 
+    category: req.body.category,
+    tags: req.body.tags.split(','),
+    point: req.body.point,
+    creator: req.user._id,
+    updater: req.user._id,
+    created_at: new Date,
+    roles: ['contributor'] // TODO : hard code for now! 
+  });
+
+  question.save(function(err) {
+      if (err) { return next(err); } 
+
+      res.redirect('/admin/questions/show/' + question._id);
+  });
+};
+
