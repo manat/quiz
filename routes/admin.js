@@ -11,6 +11,12 @@ exports.isAuthenticated = function(req, res, next) {
   }
 };
 
+exports.index = function(req, res, next) {
+  res.render('admin/index', {
+    canAddQuestions: req.user.roles.indexOf('contributor') > -1
+  });
+}
+
 exports.users = {}
 exports.users.new = function(req, res, next) {
   res.render('admin/users/new');
@@ -21,7 +27,8 @@ exports.users.create = function(req, res, next) {
     username: req.body.username, 
     email: req.body.email,
     password: req.body.password, 
-    created_at: new Date
+    created_at: new Date,
+    roles: ['contributor'] // TODO : hard code for now! 
   });
 
   // encrypt password
@@ -30,7 +37,7 @@ exports.users.create = function(req, res, next) {
   user.save(function(err) {
       if (err) { return next(err); } 
 
-      res.redirect('/admin/users/' + user._id);
+      res.redirect('/admin/login');
   });
 };
 

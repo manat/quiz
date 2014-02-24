@@ -27,11 +27,12 @@ module.exports = function(app, passport) {
   app.get('/admin/register', admin.users.new);
   app.post('/admin/register', admin.users.create);
   app.get('/admin/login', admin.users.login);
-  app.post('/admin/login', passport.authenticate('local', { successRedirect: '/', 
+  app.post('/admin/login', passport.authenticate('local', { successRedirect: '/admin', 
                                                            failureRedirect: '/admin/login' }));
   app.get('/admin/users/:id', admin.users.show);
   
   // every route below '/admin/*'' is now protected
   app.all('/admin/*', admin.isAuthenticated);
+  app.all('/admin', admin.isAuthenticated, admin.index);
   app.get('/admin/questions', admin.questions.show);
 }

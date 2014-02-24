@@ -10,6 +10,7 @@ var path = require('path');
 var error = require('./routes/error');
 var passport = require('passport');
 var LocalStrategy = require('passport-local').Strategy;
+var User = require('./models/user');
 var app = express();
 
 // all environments
@@ -37,6 +38,36 @@ if ('development' == app.get('env')) {
 
 // connect to mongodb
 mongoose.connect('mongodb://localhost:27017/quiz_dev');
+
+// init passport strategy
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+    User.findOne({ username: username }, function (err, user) {
+      if (err) { return done(err); }
+      if (!user) {
+        var message = { message: 'Incorrect username.' };
+        console.error(message);
+        return done(null, false, message);
+      }
+      if (!user.validPassword(password)) {
+        var message = { message: 'Incorrect password.' };
+        console.error(message);
+        return done(null, false, { message: 'Incorrect password.' });
+      }
+      return done(null, user);
+    });
+  }
+));
+
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  User.findById(id, function(err, user) {
+    done(err, user);
+  });
+});
 
 // load routes
 require('./routes')(app, passport); 
