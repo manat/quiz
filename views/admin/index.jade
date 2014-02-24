@@ -1,0 +1,15 @@
+extends ../layout
+
+block content
+  .large-3.columns 
+  .large-9.columns
+    h1 Administrative Tasks
+    hr
+    h3 Questions
+    ul
+      li
+        if canListQuestions
+          a(href='admin/questions') List questions
+      li
+        if canAddQuestions
+          a(href='admin/questions/new') Add questions

@@ -23,6 +23,11 @@ userSchema.methods.validPassword = function(password) {
     return bcrypt.compareSync(password, this.password);
 };
 
+// verify role 
+userSchema.methods.hasRole = function(role) {
+  return (this.roles.indexOf(role) > -1);
+}
+
 User = mongoose.model('User', userSchema);
 
  // validate roles

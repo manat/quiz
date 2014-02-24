@@ -11,9 +11,16 @@ exports.isAuthenticated = function(req, res, next) {
   }
 };
 
+exports.hasRole = function(role, req, res, next) {
+  if (req.user.hasRole(role)) {
+    next();
+  }
+}
+
 exports.index = function(req, res, next) {
   res.render('admin/index', {
-    canAddQuestions: req.user.roles.indexOf('contributor') > -1
+    canListQuestions: req.user.hasRole('admin'), 
+    canAddQuestions: req.user.hasRole('contributor')
   });
 }
 
@@ -54,6 +61,11 @@ exports.users.login = function(req, res, next) {
 };
 
 exports.questions = {}
+
+exports.questions.index = function(req, res, next) {
+  res.render('admin/questions/index');
+};
+
 exports.questions.show = function(req, res, next) {
   res.send('admin questions show');
 };
