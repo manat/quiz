@@ -43,7 +43,7 @@ exports.users.show = function(req, res, next) {
 }
 
 exports.users.login = function(req, res, next) {
-  res.send('admin users login');
+  res.render('admin/users/sessions/new');
 };
 
 exports.questions = {}

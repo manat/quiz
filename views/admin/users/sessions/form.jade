@@ -1,0 +1,20 @@
+form(action='/admin/login', method='post')
+  .row
+    .small-12.columns
+      label
+        | Username
+        span.required *
+      .row.collapse
+        .small-1.columns      
+            span.prefix dt
+        .small-11.columns
+            input(type='text', name='username', required, placeholder='dt number is encouraged (required)')
+  .row
+    .small-12.columns
+      label
+        | Password
+        span.required *
+        input(type='password', name='password', required, placeholder='password (required)')
+  .row
+    .small-12.columns
+      button.tiny.button.green(type='submit') Log in
