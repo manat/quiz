@@ -16,6 +16,7 @@ module.exports = function(app, passport) {
 
   // exam route
   app.get('/exams/:id/done', exam.done);
+  app.post('/exams/:id/done', exam.done);
   app.get('/exams/:id', exam.show);
   app.get('/exams/:exam_id/questions/:question_id', exam.question.show);
   app.post('/exams/:exam_id/questions/:question_id', exam.question.create);

@@ -4,10 +4,25 @@ block content
   .row
     .large-3.columns 
     .large-9.large-centered.columns
-      h2 Question
-      article.markdown
-        p!= md(question.text)
-        p= 'Point: ' + question.point
-      include form
+      .row
+        .small-12.columns
+          .row
+            .small-12.columns
+              .counter
+                h6
+                  span= 'questions (' + question.no + '/' + question_count + ')'
+                  span.right#time-counter
+                    span.counter= counter
+          .row
+            .small-12.columns
+              .progress.thin
+                span.meter(style='width: ' + ((100/question_count) * question.no) + '%')
+      .row
+        .small-12.columns
+          h2 Question
+          article.markdown
+            p!= md(question.text)
+            p= 'Point: ' + question.point
+          include form
 block footer      
-  script(src='/javascripts/exams/questions/form.js')
+  script(src='/javascripts/exams/questions/show.js')

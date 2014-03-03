@@ -7,6 +7,7 @@ form(method='post')
         textarea.editor.tall(name='answer', placeholder='please enter your answer')= answer
         input(type='hidden', name='submit_mode', value='')
         input(type='hidden', name='submit_id', value='')
+        input(type='hidden', name='counter', value= counter)
   .row
     .large-12.columns
       if previousQuestionIds.length > 0

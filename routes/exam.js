@@ -8,6 +8,17 @@ exports.show = function(req, res, next) {
   Exam.findById(req.params.id, function(err, exam) {
     if (err) { return next(err); } 
 
+    var cookieCounter = exam.applicant + '_counter';
+    var counter = req.signedCookies[cookieCounter];
+
+    if (!counter) {
+      res.cookie(cookieCounter, (90 * 60), { 
+        signed: true, 
+        httpOnly: true, 
+        maxAge: new Date(Date.now() + (90 * 60) + 60)
+      });
+    }
+
     res.render('exams/show', { 
       exam: exam,
       questionAmount: exam.items.length, 
@@ -31,17 +42,19 @@ exports.done = function(req, res, next) {
 
 exports.question = {};
 exports.question.show = function(req, res, next) {
-
   Exam.findById(req.params.exam_id, function(err, exam) {
+    if (err) { return next(error) };
+
     var md = require('marked');
     var question;
     var answer;
     var nextQuestionIds = [];
     var previousQuestionIds = [];
+    var cookie = req.signedCookies[exam.applicant];
+    var cookieCounter = exam.applicant + '_counter';
+    var counter = req.signedCookies[cookieCounter];
 
-    if (err) { return next(error) };
-
-    if (!isAuthenticated(req.signedCookies[exam.applicant])) { 
+    if (!isAuthenticated(cookie)) { 
       var error = new Error('Unauthenticated User');
       error.status = '401';
       return next(error); 
@@ -51,6 +64,7 @@ exports.question.show = function(req, res, next) {
       if (exam.items[i]._id == req.params.question_id) {
         question = exam.items[i].question[0];
         answer = exam.items[i].answer;
+        question.no = no;
 
         // TODO
         question.text = '#' + no + '\n```javascript\nvar s;\n```';
@@ -68,6 +82,8 @@ exports.question.show = function(req, res, next) {
       md: md, 
       question: question, 
       answer: answer,
+      question_count: exam.items.length,
+      counter: counter, 
       nextQuestionIds: nextQuestionIds,
       previousQuestionIds: previousQuestionIds
     });  
@@ -76,18 +92,34 @@ exports.question.show = function(req, res, next) {
 
 exports.question.create = function(req, res, next) {
   Exam.findById(req.params.exam_id, function(err, exam) {
+    if (err) { return next(error) };
+
     var answer = req.body.answer;
     var questionId = req.body.submit_id;
     var isNext = (req.body.submit_mode == 'next');
     var isSubmit = (req.body.submit_mode == 'submit');
+    var cookie = req.signedCookies[exam.applicant];
+    var cookieCounter = exam.applicant + '_counter';
+    var counterByCookie = req.signedCookies[cookieCounter];
+    var counter = parseInt(req.body.counter);
 
-    if (err) { return next(error) };
+    if (counter >= counterByCookie) {
+      var error = new Error('Time Counter is tampered!');
+      error.status = '500';
+      return next(error); 
+    }
 
-    if (!isAuthenticated(req.signedCookies[exam.applicant])) { 
+    if (!isAuthenticated(cookie)) { 
       var error = new Error('Unauthenticated User');
       error.status = '401';
       return next(error); 
     };
+
+    res.cookie(cookieCounter, counter, { 
+      signed: true, 
+      httpOnly: true, 
+      maxAge: new Date(Date.now() + counter)
+    });
 
     if (isSubmit) {
       return res.redirect('/exams/' + exam._id + '/done');
