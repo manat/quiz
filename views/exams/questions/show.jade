@@ -19,7 +19,7 @@ block content
                 span.meter(style='width: ' + ((100/question_count) * question.no) + '%')
       .row
         .small-12.columns
-          h2 Question
+          h3= '(' + question.point + ' points)'
           article.markdown
             p!= md(question.text)
             p= 'Point: ' + question.point

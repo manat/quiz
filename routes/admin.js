@@ -41,7 +41,7 @@ exports.hasRoleAdminOrIsCreator = function(req, res, next) {
 
 exports.index = function(req, res, next) {
   res.render('admin/index', {
-    canListQuestions: req.user.hasRole('admin'), 
+    canListQuestions: req.user.hasRole('contributor'), 
     canAddQuestions: req.user.hasRole('contributor')
   });
 };
@@ -88,7 +88,14 @@ exports.users.login = function(req, res, next) {
 
 exports.questions = {}
 exports.questions.index = function(req, res, next) {
-  res.render('admin/questions/index');
+  Question.where('creator').equals(req.user._id)
+    .exec(function(err, questions) {
+      if (err) { return next(err); } 
+
+      res.render('admin/questions/index', {
+      questions: questions
+    });
+  });
 };
 
 exports.questions.show = function(req, res, next) {

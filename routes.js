@@ -35,7 +35,7 @@ module.exports = function(app, passport) {
   // every route below '/admin/*'' is now protected
   app.all('/admin/*', admin.isAuthenticated);
   app.all('/admin', admin.isAuthenticated, admin.index);
-  app.get('/admin/questions', admin.hasRoleAdmin, admin.questions.index);
+  app.get('/admin/questions', admin.hasRoleContributor, admin.questions.index);
   app.get('/admin/questions/new', admin.hasRoleContributor, admin.questions.new);
   app.post('/admin/questions/create', admin.hasRoleContributor, admin.questions.create);
   app.get('/admin/questions/show/:id', admin.hasRoleAdminOrIsCreator, admin.questions.show);

@@ -65,10 +65,6 @@ exports.question.show = function(req, res, next) {
         question = exam.items[i].question[0];
         answer = exam.items[i].answer;
         question.no = no;
-
-        // TODO
-        question.text = '#' + no + '\n```javascript\nvar s;\n```';
-        // END TODO
       }
       else if (question) {
         nextQuestionIds.push({ no: no, id: exam.items[i]._id });
@@ -103,7 +99,7 @@ exports.question.create = function(req, res, next) {
     var counterByCookie = req.signedCookies[cookieCounter];
     var counter = parseInt(req.body.counter);
 
-    if (counter >= counterByCookie) {
+    if ((counter - counterByCookie) > 30) {
       var error = new Error('Time Counter is tampered!');
       error.status = '500';
       return next(error); 

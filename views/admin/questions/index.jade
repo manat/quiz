@@ -3,4 +3,19 @@ extends ../../layout
 block content
   .medium-9.medium-centered.columns
     h1 Questions
+    table
+      thead
+        tr
+          th(width='250') Title
+          th(width='400') Question
+          th(width='50') 
+          th(width='50') 
+      tbody
+        each question in questions
+          tr
+            td= question.title
+            td= question.text.slice(0, 100)
+            td edit
+            td delete
+        
 

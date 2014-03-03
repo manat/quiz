@@ -4,6 +4,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var questionSchema = new Schema({
+    title: String, 
     text: { type: String, required: true }, 
     category: { type: String, required: true, lowercase: true, trim: true }, 
     tags: [{ type: String, trim: true }], 
