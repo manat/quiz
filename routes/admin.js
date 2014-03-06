@@ -25,11 +25,10 @@ exports.hasRoleContributor = function(req, res, next) {
 };
 
 exports.hasRoleAdminOrIsCreator = function(req, res, next) {
-  console.log('hasRoleAdminOrIsCreator')
   if (req.user.hasRole('admin')) { return next(); }
 
   Question.findById(req.params.id, function(err, question) {
-    if (err) { return nex(err); }
+    if (err) { return next(err); }
     if (question) {
       if ((question.creator.toString() == req.user._id) ||
           (question.updater.toString() == req.user._id)) {
@@ -102,32 +101,61 @@ exports.questions.show = function(req, res, next) {
   Question.findById(req.params.id, function(err, question) {
     var md = require('marked');
 
-    if (err) { return nex(err); }
+    if (err) { return next(err); }
 
     res.render('admin/questions/show', { question: question, md: md });
   });
 };
 
 exports.questions.new = function(req, res, next) {
-  res.render('admin/questions/new');
+  res.render('admin/questions/new', { 
+    question: new Question(),
+    action: '/admin/questions/create' });
 };
 
 exports.questions.create = function(req, res, next) {
   var question = new Question({ 
+    title: req.body.title,
     text: req.body.text, 
     category: req.body.category,
     tags: req.body.tags.split(','),
     point: req.body.point,
     creator: req.user._id,
     updater: req.user._id,
-    created_at: new Date,
-    roles: ['contributor'] // TODO : hard code for now! 
+    created_at: new Date
   });
 
   question.save(function(err) {
       if (err) { return next(err); } 
 
-      res.redirect('/admin/questions/show/' + question._id);
+      res.redirect('/admin/questions/' + question._id);
   });
 };
+
+exports.questions.edit = function(req, res, next) {
+  Question.findById(req.params.id, function(err, question) {
+    if (err) { return next(err); }
+
+    res.render('admin/questions/edit', { 
+      question: question, 
+      action: '/admin/questions/' + question._id + '/update' });
+  });
+};
+
+exports.questions.update = function(req, res, next) {
+  Question.update({ _id: req.params.id }, { 
+    title: req.body.title,
+    text: req.body.text, 
+    category: req.body.category,
+    tags: req.body.tags.split(','),
+    point: req.body.point,
+    updater: req.user._id,
+    updated_at: new Date
+  }, function(err, question) {
+    if (err) { return next(err); } 
+
+    res.redirect('/admin/questions/' + req.params.id);
+  });
+};
+
 

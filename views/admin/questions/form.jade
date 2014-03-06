@@ -1,4 +1,4 @@
-form(action='/admin/questions/create', method='post')
+form(action=action, method="post")
   .row
     .small-6.columns
       label Category
@@ -11,28 +11,33 @@ form(action='/admin/questions/create', method='post')
         option(value='bonus') Bonus
     .small-6.columns
       label Tags
-      input(type='text', name='tags', placeholder='tags are separated by comma')
+      input(type='text', name='tags', placeholder='tags are separated by comma', 
+        value= question.tags)
   .row
     .small-6.columns
       label Point
         span.required *
       input(type='number', name='point', required, min='1', max='10', step='1', 
-        placeholder='scale from 1 - 10')
+        placeholder='scale from 1 - 10', value= question.point)
   .row
     .small-12.columns
       label Title
         span
-      input(type='text', name='title', placeholder='question title or summary')
+      input(type='text', name='title', placeholder='question title or summary', 
+        value= question.title)
 
   .row
     .small-12.columns
       label Question
         span.required *
-      textarea.tall(name='text', required, placeholder='question can be entered with markdown syntax')
+      textarea.tall(name='text', required, 
+        placeholder='question can be entered with markdown syntax')
+        = question.text
   .row
     .small-12.columns
       label Solution
       textarea.tall(name='solution', placeholder='solution or note to the question')
+        = question.solution
   br
   .row
     .medium-7.columns

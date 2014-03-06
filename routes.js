@@ -38,6 +38,8 @@ module.exports = function(app, passport) {
   app.get('/admin/questions', admin.hasRoleContributor, admin.questions.index);
   app.get('/admin/questions/new', admin.hasRoleContributor, admin.questions.new);
   app.post('/admin/questions/create', admin.hasRoleContributor, admin.questions.create);
-  app.get('/admin/questions/show/:id', admin.hasRoleAdminOrIsCreator, admin.questions.show);
+  app.post('/admin/questions/:id/update', admin.hasRoleAdminOrIsCreator, admin.questions.update);
+  app.get('/admin/questions/:id/edit', admin.hasRoleAdminOrIsCreator, admin.questions.edit);
+  app.get('/admin/questions/:id', admin.hasRoleAdminOrIsCreator, admin.questions.show);
 
 }

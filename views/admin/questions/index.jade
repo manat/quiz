@@ -15,7 +15,8 @@ block content
           tr
             td= question.title
             td= question.text.slice(0, 100)
-            td edit
+            td 
+              a(href='questions/' + question.id + '/edit') edit
             td delete
         
 
